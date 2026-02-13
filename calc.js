@@ -3,24 +3,37 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
-rl.question("quanto quer investir? ", (valor) => {
-    console.log(`voce quer investir: ${valor}`);
-    
-    let versaoNumerica = parseFloat(valor)
-        if (isNaN(versaoNumerica))  {
-            console.log("Por favor, digite um numero válido. ")
-        rl.question();
+function fazerPergunta(texto) {
+   return new Promise((resolve) => {
+        rl.question(texto, (resposta) => {
+            resolve(resposta)
+        })
+    })
+}
+async function executar() {
+let valor;
+while (true) {
+    const resposta = await fazerPergunta("Quanto quer investir? ");
+    valor = parseFloat(resposta)
+        if (!isNaN(valor)) {
+            break;
         }
-        
+        console.log("erro: Digite apenas números!");
+}
+let anos;
+while (true) {
+    const respostaN = await fazerPergunta("Quantos anos voce quer investir? ");
+    anos = parseFloat(respostaN)
+        if (!isNaN(anos)) {
+        break;
+     }
+        console.log("por quantos anos voce vai investir? ");
+}
+    let montante = valor * Math.pow(1.06, anos)
+        console.log("O total após " + anos + " anos será: R$  " + montante.toLocaleString())
+            rl.close()
+}
 
-rl.question("por quantos anos? ", (anos) => {
-    console.log(`por ${anos} anos.`);
-      
-        
-     let montante = (valor) * Math.pow(1.06, (anos));
-        
-        console.log("Na poupança vira: R$ ", montante.toLocaleString(undefined, {minimumFractionDigits: 2}))
 
-    rl.close();
-});
-});
+
+executar()
